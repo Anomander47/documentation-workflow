@@ -3,7 +3,7 @@
 
 <%@ include file="../layout/taglib.jsp" %>
 
-<form:form commandName="user" cssClass="form-horizontal">
+<form:form commandName="user" cssClass="form-horizontal registrationForm">
 
 	<c:if test="${param.success eq true}">
 		<div class="alert alert-success">Registration Successful</div>
@@ -13,6 +13,7 @@
 		<label for="first-name" class="col-sm-2 control-label">First name:</label>
 		<div class="col-sm-10">
 			<form:input path="firstName" cssClass="form-control" />
+			<form:errors path="firstName" />
 		</div>
 	</div>
 	
@@ -20,6 +21,7 @@
 		<label for="last-name" class="col-sm-2 control-label">Last name:</label>
 		<div class="col-sm-10">
 			<form:input path="lastName" cssClass="form-control" />
+			<form:errors path="lastName" />
 		</div>
 	</div>
 	
@@ -27,6 +29,7 @@
 		<label for="email" class="col-sm-2 control-label">Email:</label>
 		<div class="col-sm-10">
 			<form:input path="email" cssClass="form-control" />
+			<form:errors path="email" />
 		</div>
 	</div>
 	
@@ -34,6 +37,7 @@
 		<label for="name" class="col-sm-2 control-label">Login:</label>
 		<div class="col-sm-10">
 			<form:input path="name" cssClass="form-control" />
+			<form:errors path="name" />
 		</div>
 	</div>
 	
@@ -41,12 +45,74 @@
 		<label for="password" class="col-sm-2 control-label">Password:</label>
 		<div class="col-sm-10">
 			<form:password path="password" cssClass="form-control" />
+			<form:errors path="password" />
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label for="password" class="col-sm-2 control-label">Confirm password:</label>
+		<div class="col-sm-10">
+			<input type="password" name="password_confirm" id="password_confirm" class="form-control" />
 		</div>
 	</div>
 	
 	<div class="form-group">
 		<div class="col-sm-2">
-			<input type="submit" value="Save" class="btn btn-lg btn-primary" />
+			<input type="submit" value="Register" class="btn btn-lg btn-primary" />
 		</div>
 	</div>
 </form:form>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".registrationForm").validate(
+		{
+			rules: {
+				firstName: {
+					required : true,
+				},
+				lastName: {
+					required : true,
+				},
+				email: {
+					required : true,
+					email : true
+				},
+				name: {
+					required : true,
+					minlength : 3,
+					remote : {
+						url: "<spring:url value='/register/available.html' />",
+						type: "get",
+						data: {
+							username: function() {
+								return $("#name").val();
+							}
+						}
+					}
+				},
+				password: {
+					required : true,
+					minlength : 5
+				},
+				password_confirm: {
+					required : true,
+					minlength : 5,
+					equalTo: "#password"
+				}
+			},
+			highlight: function(element) {
+				$(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+			},
+			unhighlight: function(element) {
+				$(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+			},
+			messages: {
+				name: {
+					remote: "Such username already exists"
+				}
+			}
+		}		
+	);
+});
+</script>

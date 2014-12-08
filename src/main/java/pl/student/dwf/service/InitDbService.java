@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import pl.student.dwf.entity.File;
+import pl.student.dwf.entity.Document;
 import pl.student.dwf.entity.Role;
 import pl.student.dwf.entity.User;
-import pl.student.dwf.repository.FileRepository;
+import pl.student.dwf.repository.DocumentRepository;
 import pl.student.dwf.repository.RoleRepository;
 import pl.student.dwf.repository.UserRepository;
 
@@ -29,7 +29,7 @@ public class InitDbService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private FileRepository fileRepository;
+	private DocumentRepository fileRepository;
 	
 	@PostConstruct
 	public void init() {
@@ -45,6 +45,9 @@ public class InitDbService {
 		User userAdmin = new User();
 		userAdmin.setEnabled(true);
 		userAdmin.setName("admin");
+		userAdmin.setFirstName("John");
+		userAdmin.setLastName("Admin");
+		userAdmin.setEmail("AdminJohn@gmail.com");
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		userAdmin.setPassword(encoder.encode("admin"));
 		List<Role> roles = new ArrayList<Role>();
@@ -53,7 +56,7 @@ public class InitDbService {
 		userAdmin.setRoles(roles);
 		userRepository.save(userAdmin);
 		
-		File fileHolder = new File();
+		Document fileHolder = new Document();
 		List<User> users = new ArrayList<User>();
 		users.add(userAdmin);
 		fileHolder.setName("testFile");

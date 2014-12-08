@@ -6,12 +6,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import pl.student.dwf.entity.File;
+import pl.student.dwf.entity.Document;
 import pl.student.dwf.entity.Role;
 import pl.student.dwf.entity.User;
 
-public interface FileRepository extends JpaRepository<File, Integer> {
+public interface DocumentRepository extends JpaRepository<Document, Integer> {
 	
-	List<File> findBySender(String sender, Pageable pageable );
+	List<Document> findBySender(String sender, Pageable pageable );
+
+	Document findById(Integer id);
+	
+	
 
 }

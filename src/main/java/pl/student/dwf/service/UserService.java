@@ -11,10 +11,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import pl.student.dwf.entity.File;
+import pl.student.dwf.entity.Document;
 import pl.student.dwf.entity.Role;
 import pl.student.dwf.entity.User;
-import pl.student.dwf.repository.FileRepository;
+import pl.student.dwf.repository.DocumentRepository;
 import pl.student.dwf.repository.RoleRepository;
 import pl.student.dwf.repository.UserRepository;
 
@@ -29,7 +29,7 @@ public class UserService {
 	private RoleRepository roleRepository;
 	
 	@Autowired
-	private FileRepository fileRepository;
+	private DocumentRepository documentRepository;
 	
 	public List<User> findAll() {
 		return userRepository.findAll();
@@ -40,11 +40,11 @@ public class UserService {
 	}
 
 	@Transactional
-	public User findOneWithFiles(int id) {
+	public User findOneWithDocuments(int id) {
 		User user = findOne(id);
 		String sender = user.getName();
-		List<File> files = fileRepository.findBySender(sender, new PageRequest(0, 10, Direction.DESC, "date"));
-		user.setFiles(files);
+		List<Document> documents = documentRepository.findBySender(sender, new PageRequest(0, 10, Direction.DESC, "date"));
+		user.setDocuments(documents);
 		return user;
 	}
 
@@ -61,8 +61,18 @@ public class UserService {
 		
 	}
 
-	public User findOneWithFiles(String name) {
+	public User findOneWithDocuments(String name) {
 		User user = userRepository.findByName(name);
-		return findOneWithFiles(user.getId());
+		return findOneWithDocuments(user.getId());
 	}
+
+	public void disable(int id) {
+		User user = userRepository.findOne(id);
+		user.setEnabled(false);
+	}
+
+	public User findOne(String username) {
+		return userRepository.findByName(username);
+	}
+
 }

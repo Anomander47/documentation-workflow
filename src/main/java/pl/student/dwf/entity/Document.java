@@ -4,20 +4,26 @@ import java.sql.Blob;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
-public class File {
+public class Document {
 
 	@Id
 	@GeneratedValue
 	private Integer id;
 	
+	@NotEmpty(message="This field cannot be empty")
 	private String name;
 	
 	private String type;
@@ -36,18 +42,21 @@ public class File {
 
 	private String sender;
 	
+	@NotEmpty(message="This field cannot be empty")
 	private String reciever;
 	
-	@ManyToMany(mappedBy="files")
+	@ManyToMany
+	@JoinTable
 	private List<User> users;
 	
-	private Blob content;
+	@Lob
+	private byte[] content;
 
-	public Blob getContent() {
+	public byte[] getContent() {
 		return content;
 	}
 
-	public void setContent(Blob content) {
+	public void setContent(byte[] content) {
 		this.content = content;
 	}
 
