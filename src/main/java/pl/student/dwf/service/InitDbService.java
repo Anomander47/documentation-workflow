@@ -1,5 +1,6 @@
 package pl.student.dwf.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,18 +55,44 @@ public class InitDbService {
 		roles.add(roleAdmin);
 		roles.add(roleUser);
 		userAdmin.setRoles(roles);
+		new File("D:\\FileIO\\" + userAdmin.getName()).mkdir();
 		userRepository.save(userAdmin);
+		
+		User userTest = new User();
+		userTest.setEnabled(true);
+		userTest.setName("mike");
+		userTest.setFirstName("Mike");
+		userTest.setLastName("Test");
+		userTest.setEmail("MikeTest@gmail.com");
+		BCryptPasswordEncoder encoder2 = new BCryptPasswordEncoder();
+		userTest.setPassword(encoder2.encode("admin"));
+		List<Role> roles2 = new ArrayList<Role>();
+		roles2.add(roleUser);
+		userTest.setRoles(roles2);
+		new File("D:\\FileIO\\" + userTest.getName()).mkdir();
+		userRepository.save(userTest);
 		
 		Document fileHolder = new Document();
 		List<User> users = new ArrayList<User>();
 		users.add(userAdmin);
+		users.add(userTest);
 		fileHolder.setName("testFile");
-		fileHolder.setType("pdf");
+		fileHolder.setType("application/pdf");
 		fileHolder.setDate(new Date());
-		fileHolder.setSender(userAdmin.getName());
-		fileHolder.setReciever("Mark");
+		fileHolder.setSender(userAdmin.getId());
+		fileHolder.setReciever(2);
 		fileHolder.setUsers(users);
 		fileRepository.save(fileHolder);
+		
+		Document fileHolder2 = new Document();
+		fileHolder2.setName("testFile2");
+		fileHolder2.setType("text/plain");
+		fileHolder2.setDate(new Date());
+		fileHolder2.setSender(userAdmin.getId());
+		fileHolder2.setReciever(1);
+		fileHolder2.setUsers(users);
+		fileHolder2.setEditable(true);
+		fileRepository.save(fileHolder2);
 	}
 	
 }

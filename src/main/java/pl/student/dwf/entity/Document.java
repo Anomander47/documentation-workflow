@@ -23,7 +23,6 @@ public class Document {
 	@GeneratedValue
 	private Integer id;
 	
-	@NotEmpty(message="This field cannot be empty")
 	private String name;
 	
 	private String type;
@@ -40,25 +39,23 @@ public class Document {
 		this.users = users;
 	}
 
-	private String sender;
+	private Integer sender;
 	
-	@NotEmpty(message="This field cannot be empty")
-	private String reciever;
+	private Integer reciever;
 	
+	private String description;
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	@ManyToMany
 	@JoinTable
 	private List<User> users;
-	
-	@Lob
-	private byte[] content;
-
-	public byte[] getContent() {
-		return content;
-	}
-
-	public void setContent(byte[] content) {
-		this.content = content;
-	}
 
 	public Integer getId() {
 		return id;
@@ -100,19 +97,19 @@ public class Document {
 		this.editable = editable;
 	}
 
-	public String getSender() {
+	public Integer getSender() {
 		return sender;
 	}
 
-	public void setSender(String sender) {
+	public void setSender(Integer sender) {
 		this.sender = sender;
 	}
 
-	public String getReciever() {
+	public Integer getReciever() {
 		return reciever;
 	}
 
-	public void setReciever(String reciever) {
+	public void setReciever(Integer reciever) {
 		this.reciever = reciever;
 	}
 }

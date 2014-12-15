@@ -3,6 +3,7 @@ package pl.student.dwf.controller;
 import java.security.Principal;
 import java.sql.Blob;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.fileupload.UploadContext;
@@ -44,25 +45,47 @@ public class UserController {
 		return "account";
 	}
 	
-	@RequestMapping(value = "/account", method = RequestMethod.POST)
+	@RequestMapping("/myDocuments")
+	public String myDocuments(Model model, Principal principal) {
+		String name = principal.getName();
+		model.addAttribute("user", userService.findOneWithDocuments(name));
+		model.addAttribute("users", userService.findAll());
+		return "myDocuments";
+	}
+	
+	@RequestMapping(value = "/myDocuments", method = RequestMethod.POST)
     public String doAddDocument(Model model, @Valid @ModelAttribute("document") Document document,
-    		BindingResult result, @RequestParam("file") MultipartFile file, Principal principal) {
+    		BindingResult result, @RequestParam("file") MultipartFile file, @RequestParam("reciever") String recieverId, Principal principal) {
 		if (result.hasErrors()) {
-			return account(model, principal);
+			return myDocuments(model, principal);
 		} 
         if (!file.isEmpty()) {
+        	Integer recieverIdInt = Integer.parseInt(recieverId);
         	String userName = principal.getName();
-        	documentService.save(document, userName, file);
-            return "redirect:account.html";
+        	documentService.save(document, userName, file, recieverIdInt);
+            return "redirect:myDocuments.html";
         }
-        return "redirect:/account.html?fail=true";
+        return "redirect:/myDocuments.html?fail=true";
     }
 	
 	@RequestMapping("/document/remove/{id}")
-	public String removeDocument(@PathVariable int id) {
+	public String removeDocument(@PathVariable int id, Principal principal) {
 		Document document = documentService.findOne(id);
-		documentService.delete(document);
-		return "redirect:/account.html?success=true";
+		User user = userService.findOne(principal.getName());
+		String userName = user.getName();
+		if (user.getId() == document.getSender()) {
+		documentService.delete(document, userName);
+		return "redirect:/myDocuments.html?success=true";
+		} else {
+			return "redirect:/myDocuments.html?wrongUser=true";
+		}
+	}
+	
+	@RequestMapping("/document/download/{id}")
+	public String downloadDocument(@PathVariable int id, HttpServletResponse response) {
+		Document document = documentService.findOne(id);
+		documentService.download(document, response);
+		return "redirect:/myDocuments.html";
 	}
 	
 }

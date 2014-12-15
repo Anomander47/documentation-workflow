@@ -1,5 +1,6 @@
 package pl.student.dwf.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +43,12 @@ public class UserService {
 	@Transactional
 	public User findOneWithDocuments(int id) {
 		User user = findOne(id);
-		String sender = user.getName();
+		Integer sender = user.getId();
+		Integer reciever = user.getId();
 		List<Document> documents = documentRepository.findBySender(sender, new PageRequest(0, 10, Direction.DESC, "date"));
 		user.setDocuments(documents);
+		List<Document> documentsToMe = documentRepository.findByReciever(reciever, new PageRequest(0, 10, Direction.DESC, "date"));
+		user.setDocumentstoMe(documentsToMe);
 		return user;
 	}
 
@@ -56,6 +60,24 @@ public class UserService {
 		List<Role> roles = new ArrayList<Role>();
 		roles.add(roleRepository.findByName("ROLE_USER"));
 		user.setRoles(roles);
+		
+		new File("D:\\FileIO\\" + user.getName()).mkdir();
+		
+		userRepository.save(user);
+		
+	}
+	
+	public void edit(User user, String oldUserName) {
+		user.setEnabled(true);
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		user.setPassword(encoder.encode(user.getPassword()));
+		
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(roleRepository.findByName("ROLE_USER"));
+		user.setRoles(roles);
+		File oldFolder = new File("D:\\FileIO\\" + oldUserName);
+		File newFolder = new File("D:\\FileIO\\" + user.getName());
+		oldFolder.renameTo(newFolder);
 		
 		userRepository.save(user);
 		
@@ -69,6 +91,11 @@ public class UserService {
 	public void disable(int id) {
 		User user = userRepository.findOne(id);
 		user.setEnabled(false);
+	}
+	
+	public void enable(int id) {
+		User user = userRepository.findOne(id);
+		user.setEnabled(true);
 	}
 
 	public User findOne(String username) {

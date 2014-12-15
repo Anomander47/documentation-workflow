@@ -68,6 +68,17 @@ public class User {
 	
 	@ManyToMany(mappedBy="users")
 	private List<Document> documents;
+	
+	@ManyToMany(mappedBy="users")
+	private List<Document> documentstoMe;
+
+	public List<Document> getDocumentstoMe() {
+		return documentstoMe;
+	}
+
+	public void setDocumentstoMe(List<Document> documentstoMe) {
+		this.documentstoMe = documentstoMe;
+	}
 
 	public String getName() {
 		return name;
