@@ -55,7 +55,6 @@ public class InitDbService {
 		roles.add(roleAdmin);
 		roles.add(roleUser);
 		userAdmin.setRoles(roles);
-		new File("D:\\FileIO\\" + userAdmin.getName()).mkdir();
 		userRepository.save(userAdmin);
 		
 		User userTest = new User();
@@ -69,30 +68,7 @@ public class InitDbService {
 		List<Role> roles2 = new ArrayList<Role>();
 		roles2.add(roleUser);
 		userTest.setRoles(roles2);
-		new File("D:\\FileIO\\" + userTest.getName()).mkdir();
 		userRepository.save(userTest);
-		
-		Document fileHolder = new Document();
-		List<User> users = new ArrayList<User>();
-		users.add(userAdmin);
-		users.add(userTest);
-		fileHolder.setName("testFile");
-		fileHolder.setType("application/pdf");
-		fileHolder.setDate(new Date());
-		fileHolder.setSender(userAdmin.getId());
-		fileHolder.setReciever(2);
-		fileHolder.setUsers(users);
-		fileRepository.save(fileHolder);
-		
-		Document fileHolder2 = new Document();
-		fileHolder2.setName("testFile2");
-		fileHolder2.setType("text/plain");
-		fileHolder2.setDate(new Date());
-		fileHolder2.setSender(userAdmin.getId());
-		fileHolder2.setReciever(1);
-		fileHolder2.setUsers(users);
-		fileHolder2.setEditable(true);
-		fileRepository.save(fileHolder2);
 	}
 	
 }

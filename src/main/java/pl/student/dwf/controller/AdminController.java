@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.student.dwf.entity.Document;
 import pl.student.dwf.entity.User;
 import pl.student.dwf.service.DocumentService;
+import pl.student.dwf.service.HistoryService;
 import pl.student.dwf.service.UserService;
 
 @Controller
@@ -30,15 +31,29 @@ public class AdminController {
 	@Autowired
 	private DocumentService documentService;
 	
+	@Autowired
+	private HistoryService historyService;
+	
 	@ModelAttribute("editUser")
 	public User editUser() {
 		return new User();
+	}
+	
+	@ModelAttribute("editDocument")
+	public Document editDocument() {
+		return new Document();
 	}
 
 	@RequestMapping
 	public String users(Model model) {
 		model.addAttribute("users", userService.findAll());
 		return "users";
+	}
+	
+	@RequestMapping("/history")
+	public String history(Model model) {
+		model.addAttribute("history", historyService.findAll());
+		return "history";
 	}
 	
 	@RequestMapping("/{id}")
@@ -59,6 +74,22 @@ public class AdminController {
 		userService.enable(id);
 		return "redirect:/users.html";
 	}
+	
+	@RequestMapping(value = "/editDocumentByAdmin", method = RequestMethod.POST)
+    public String editDocumentByAdmin(Model model, @RequestParam("file") MultipartFile file, @RequestParam("reciever") String recieverId, @RequestParam("docId") String documentId, @RequestParam("docDescription") String documentDescription, @RequestParam("userId") String userId, Principal principal) {
+    	Integer userIdInt = Integer.parseInt(userId);
+    	String id = userService.findOne(userIdInt).getId().toString();
+        if (!file.isEmpty()) {
+        	Integer recieverIdInt = Integer.parseInt(recieverId);
+        	Integer documentIdInt = Integer.parseInt(documentId);
+        	documentService.editByAdmin(file, recieverIdInt, documentIdInt, documentDescription);
+        	return "redirect:/users/" + id +".html";
+        }
+        if (file.isEmpty()) {
+        return "redirect:/users/" + id +".html?fail=true";
+        }
+        return "redirect:/users/" + id +".html";
+    }
 	
 	@RequestMapping("/document/removeByAdmin/{userId}/{id}")
 	public String removeDocumentByAdmin(@PathVariable int userId, @PathVariable int id) {

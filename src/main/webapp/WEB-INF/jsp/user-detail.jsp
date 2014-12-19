@@ -7,6 +7,7 @@
 		<div class="alert alert-success">Document Removed</div>
 	</c:if>
 	
+	<input id="varUserId" value="${user.id}" type="hidden"/>
 	<input id="varFirstName" value="${user.firstName}" type="hidden"/>
 	<input id="varLastName" value="${user.lastName}" type="hidden"/>
 	<input id="varEmail" value="${user.email}" type="hidden"/>
@@ -29,6 +30,24 @@ $(document).ready(function() {
 		if($('#loginInput').val() == ''){
 			$('#loginInput').val($("#varLogin").val());
 		   }
+	});
+	$(".triggerDocumentEdition").click(function(e) {
+		e.preventDefault();
+		Id = this.id;
+		$("#editDocForm .nameHolder").attr("placeholder", $("#varName"+Id).val());
+		$("#editDocForm .descriptionHolder").attr("placeholder", $("#varDescription"+Id).val());
+		$("#modalEditDoc").modal();
+	});
+	$(".editDocumentButton").click(function(e) {
+		if($('#nameInput').val() == ''){
+			$('#nameInput').val($("#varName"+Id).val());
+		   }
+		if($('#descriptionInput').val() == ''){
+			$('#descriptionInput').val($("#varDescription"+Id).val());
+		   }
+		$("#docId").val(Id);
+		$("#docDescription").val($("#descriptionInput").val());
+		$("#userId").val($("#varUserId").val());
 	});
 	$(".editUserForm").validate(
 			{
@@ -71,6 +90,11 @@ $(document).ready(function() {
 				}
 			}		
 		);
+	$(".triggerEdition").click(function(e) {
+		e.preventDefault();
+		$("#modalEditDoc .editBtn").attr("href", $(this).attr("href"));
+		$("#modalEditDoc").modal();
+	});
 });
 </script>
 
@@ -127,24 +151,6 @@ $(document).ready(function() {
 	});
 });
 </script>
-
-<br>
-
-<div role="tabpanel">
-
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs">
-  	<c:forEach items="${user.documents}" var="document">
-  		 <li><a href="#document_${document.id}" data-toggle="tab">${document.type}</a></li>
-  	</c:forEach>
-  </ul>
-
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="home"></div>
-  </div>
-
-</div>
 	
 	<br><br>
 
@@ -154,8 +160,8 @@ $(document).ready(function() {
 			<tr>
 				<th>Document Name</th>
 				<th>Description</th>
-				<th>Type</th>
 				<th>Date</th>
+				<th>Last edited</th>
 				<th>To Who:</th>
 				<th>Action</th>
 			</tr>
@@ -165,16 +171,18 @@ $(document).ready(function() {
 					<tr>
 						<td><c:out value="${document.name}" /></td>
 						<td><c:out value="${document.description}" /></td>
-						<td><c:out value="${document.type}" /></td>
 						<td><c:out value="${document.date}" /></td>
+						<td><c:out value="${document.lastEdited}" /></td>
 						<td><c:out value="${users[document.reciever-1].firstName} ${users[document.reciever-1].lastName}" /></td>
 						<td>
 							<a href="<spring:url value="/document/download/${document.id}.html" />" class="btn btn-success ">download</a>
-							<c:if test="${document.editable eq true}">
-								<a href='<spring:url value="/document/remove/${document.id}.html" />' class="btn btn-primary ">
+							<a href='<spring:url value="/users/document/editByAdmin/${document.id}.html" />' id="${document.id}" class="btn btn-primary triggerDocumentEdition ">
+									<input id="varName${document.id}" value="${document.name}" type="hidden"/>
+									<input id="varDescription${document.id}" value="${document.description}" type="hidden"/>
+									<input id="varSender${document.id}" value="${document.sender}" type="hidden"/>
+									<input id="varReciever${document.id}" value="${document.reciever}" type="hidden"/>
 									edit
 								</a>
-							</c:if>
 							<a href="<spring:url value="/users/document/removeByAdmin/${user.id}/${document.id}.html" />" class="btn btn-danger triggerDelete ">delete</a>
 						</td>
 						</tr>
@@ -187,8 +195,8 @@ $(document).ready(function() {
 			<tr>
 				<th>Document Name</th>
 				<th>Description</th>
-				<th>Type</th>
 				<th>Date</th>
+				<th>Last edited</th>
 				<th>From</th>
 				<th>Action</th>
 			</tr>
@@ -199,16 +207,18 @@ $(document).ready(function() {
 					<tr>
 						<td><c:out value="${documentToMe.name}" /></td>
 						<td><c:out value="${documentToMe.description}" /></td>
-						<td><c:out value="${documentToMe.type}" /></td>
 						<td><c:out value="${documentToMe.date}" /></td>
+						<td><c:out value="${documentToMe.lastEdited}" /></td>
 						<td><c:out value="${users[documentToMe.sender-1].firstName} ${users[documentToMe.sender-1].lastName}" /></td>
 						<td>
 							<a href="<spring:url value="/document/download/${documentToMe.id}.html" />" class="btn btn-success ">download</a>
-							<c:if test="${documentToMe.editable eq true}">
-								<a href='<spring:url value="/document/remove/${documentToMe.id}.html" />' class="btn btn-primary ">
+							<a href='<spring:url value="/users/document/editByAdmin/${documentToMe.id}.html" />' id="${documentToMe.id}" class="btn btn-primary triggerDocumentEdition ">
+									<input id="varName${documentToMe.id}" value="${documentToMe.name}" type="hidden"/>
+									<input id="varDescription${documentToMe.id}" value="${documentToMe.description}" type="hidden"/>
+									<input id="varSender${documentToMe.id}" value="${documentToMe.sender}" type="hidden"/>
+									<input id="varReciever${documentToMe.id}" value="${documentToMe.reciever}" type="hidden"/>
 									edit
 								</a>
-							</c:if>
 							<a href="<spring:url value="/users/document/removeByAdmin/${user.id}/${documentToMe.id}.html" />" class="btn btn-danger triggerDelete ">delete</a>
 						</td>
 					</tr>
@@ -302,4 +312,54 @@ $(document).ready(function() {
 	</div>
 	</div>
 	</div>
+</form:form>
+
+<form:form id="editDocForm" commandName="editDocument" cssClass="form-horizontal documentForm" method="post" action="/users/editDocumentByAdmin.html" enctype="multipart/form-data">
+<!-- Modal -->
+<div class="modal fade" id="modalEditDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel"></h4>
+      </div>
+      <div class="modal-body">
+      
+      <input id="docId" name="docId" value="" type="hidden"/>
+      <input id="docDescription"  name="docDescription" value="" type="hidden"/>
+      <input id="userId"  name="userId" value="" type="hidden"/>
+      
+		<div class="form-group">
+			<label for="reciever" class="col-sm-2 control-label">To Who:</label>
+  				<select class="form-control" name="reciever">
+  					<c:forEach items="${users}" var="usersList">
+  					<option value="${usersList.id}" id="listOption">${usersList.firstName} ${usersList.lastName}</option>
+  					</c:forEach>
+  				</select>
+		</div>
+		
+		<br><br>
+		<div class="form-group">
+			<label for="description" class="col-sm-2 control-label">Description:</label>
+			<div class="col-sm-10">
+				<form:input path="description" id="descriptionInput" cssClass="form-control descriptionHolder" placeholder="" />
+				<form:errors path="description" />
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-2">
+				<label for="file-to-add" class="col-sm-2 control-label">File</label>
+				<input type="file" name="file" id="file" />
+			</div>
+		</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary editDocumentButton" value="Save">
+      </div>
+    </div>
+  </div>
+</div>
 </form:form>

@@ -38,6 +38,11 @@ public class UserController {
 		return new Document();
 	}
 	
+	@ModelAttribute("editDocument")
+	public Document editDocument() {
+		return new Document();
+	}
+	
 	@RequestMapping("/account")
 	public String account(Model model, Principal principal) {
 		String name = principal.getName();
@@ -66,6 +71,21 @@ public class UserController {
             return "redirect:myDocuments.html";
         }
         return "redirect:/myDocuments.html?fail=true";
+    }
+	
+	@RequestMapping(value = "/editDocument", method = RequestMethod.POST)
+    public String editDocument(Model model, @RequestParam("file") MultipartFile file, @RequestParam("reciever") String recieverId, @RequestParam("docId") String documentId, @RequestParam("docDescription") String documentDescription, Principal principal) {
+        if (!file.isEmpty()) {
+        	Integer recieverIdInt = Integer.parseInt(recieverId);
+        	Integer documentIdInt = Integer.parseInt(documentId);
+        	String userName = principal.getName();
+        	documentService.edit(userName, file, recieverIdInt, documentIdInt, documentDescription);
+            return "redirect:myDocuments.html";
+        }
+        if (file.isEmpty()) {
+        return "redirect:/myDocuments.html?fail=true";
+        }
+		return "redirect:myDocuments.html";
     }
 	
 	@RequestMapping("/document/remove/{id}")

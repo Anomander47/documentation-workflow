@@ -11,9 +11,20 @@
 	</entity>
 
 	<entity>
-		<entity-name>pl.student.dwf.entity.User</entity-name>
+		<entity-name>pl.student.dwf.entity.Document</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>286</entity-height>
+		<entity-X-Coordinate>558</entity-X-Coordinate>
+		<entity-Y-Coordinate>164</entity-Y-Coordinate>
+		<primary-collapsed>false</primary-collapsed>
+		<relation-collapsed>false</relation-collapsed>
+		<basic-collapsed>false</basic-collapsed>
+	</entity>
+
+	<entity>
+		<entity-name>pl.student.dwf.entity.User</entity-name>
+		<entity-width>120</entity-width>
+		<entity-height>306</entity-height>
 		<entity-X-Coordinate>220</entity-X-Coordinate>
 		<entity-Y-Coordinate>40</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
@@ -22,11 +33,11 @@
 	</entity>
 
 	<entity>
-		<entity-name>pl.student.dwf.entity.Document</entity-name>
+		<entity-name>pl.student.dwf.entity.History</entity-name>
 		<entity-width>120</entity-width>
-		<entity-height>266</entity-height>
-		<entity-X-Coordinate>558</entity-X-Coordinate>
-		<entity-Y-Coordinate>164</entity-Y-Coordinate>
+		<entity-height>108</entity-height>
+		<entity-X-Coordinate>720</entity-X-Coordinate>
+		<entity-Y-Coordinate>40</entity-Y-Coordinate>
 		<primary-collapsed>false</primary-collapsed>
 		<relation-collapsed>false</relation-collapsed>
 		<basic-collapsed>false</basic-collapsed>

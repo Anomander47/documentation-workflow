@@ -56,13 +56,9 @@ public class UserService {
 		user.setEnabled(true);
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
-		
 		List<Role> roles = new ArrayList<Role>();
 		roles.add(roleRepository.findByName("ROLE_USER"));
 		user.setRoles(roles);
-		
-		new File("D:\\FileIO\\" + user.getName()).mkdir();
-		
 		userRepository.save(user);
 		
 	}
@@ -75,10 +71,6 @@ public class UserService {
 		List<Role> roles = new ArrayList<Role>();
 		roles.add(roleRepository.findByName("ROLE_USER"));
 		user.setRoles(roles);
-		File oldFolder = new File("D:\\FileIO\\" + oldUserName);
-		File newFolder = new File("D:\\FileIO\\" + user.getName());
-		oldFolder.renameTo(newFolder);
-		
 		userRepository.save(user);
 		
 	}

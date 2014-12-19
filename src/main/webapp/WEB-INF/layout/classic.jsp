@@ -48,11 +48,11 @@
           </div>
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li class="${current == 'index' ? 'active' : ''}"><a href='<spring:url value="/" />'>Home</a></li>
               <security:authorize access="hasRole('ROLE_ADMIN')">
               		<li class="${current == 'users' ? 'active' : ''}"><a href="<spring:url value="/users.html" />">Users</a></li>
+              		<li class="${current == 'register' ? 'active' : ''}"><a href="<spring:url value="/register.html" />">User Registration</a></li>
+              		<li class="${current == 'history' ? 'active' : ''}"><a href="<spring:url value="/users/history.html" />">History</a></li>
               </security:authorize>
-              <li class="${current == 'register' ? 'active' : ''}"><a href="<spring:url value="/register.html" />">User Registration</a></li>
               <security:authorize access="! isAuthenticated()">
               		<li class="${current == 'login' ? 'active' : ''}"><a href="<spring:url value="/login.html" />">Login</a></li>
               </security:authorize>

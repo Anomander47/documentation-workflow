@@ -4,5 +4,6 @@
 		<class>pl.student.dwf.entity.User</class>
 		<class>pl.student.dwf.entity.Role</class>
 		<class>pl.student.dwf.entity.Document</class>
+		<class>pl.student.dwf.entity.History</class>
 	</persistence-unit>
 </persistence>
